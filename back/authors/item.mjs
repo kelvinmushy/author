@@ -6,9 +6,9 @@ const router=express.Router();
 router.use(express.json());
 
 
-router.get('/all/items',async(req, res) => {
+router.get('/all/items',(req, res) => {
 
-    var qry =`SELECT * from posts;`;
+    var qry =`SELECT * from items;`;
 
       conn.connect(function () {
        try{
@@ -37,7 +37,7 @@ router.post('/item/add',(req,res)=>{
     const category_id=req.body['category_id']
     conn.connect(function() {
         try{
-           var sql = "INSERT INTO posts (name, category_id) VALUES ('"+name+"', '"+category_id+"')";
+           var sql = "INSERT INTO items (name, category_id) VALUES ('"+name+"', '"+category_id+"')";
          
            conn.query(sql, function (err, result) {
  
@@ -65,7 +65,7 @@ router.delete('/item/delete/:id',async (req,res)=>{
     const id=req.params.id;
   conn.connect(function() {
       try{
-       var sql = "delete from posts where id='"+id+"'";
+       var sql = "delete from items where id='"+id+"'";
        conn.query(sql, function (err, result) {
          if (err) throw err;
            res.status(200).json({
