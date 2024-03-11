@@ -7,14 +7,14 @@ const router=express.Router();
 router.use(express.json());
 
 
-export async function addItem(author_id,name,description,price,category_type_id){
+export async function addItem(author_id,title,description,price,category_type_id){
 
   const create_new= await conn.promise().query(
 
-     `INSERT INTO items (author_id,name,description,price,category_type_id) 
+     `INSERT INTO items (author_id,title,description,price,category_type_id) 
         VALUES (?, ?,?,?,?)`,
 
-      [author_id,name,description,price,category_type_id]
+      [author_id,title,description,price,category_type_id]
       );
      return create_new;
   
@@ -45,13 +45,13 @@ export async function getItems() {
 
   }
 
-  export async function updateItem(author_id,name,description,price,category_type_id,id){
+  export async function updateItem(author_id,title,description,price,category_type_id,id){
 
     const update = await conn
 		.promise()
 		.query(
-		  `UPDATE items set author_id = ?, name = ?, description = ? ,price=?,category_type_id=? where id = ?`,
-		    [author_id,name,description,price,category_type_id,id]
+		  `UPDATE items set author_id = ?, title = ?, description = ? ,price=?,category_type_id=? where id = ?`,
+		    [author_id,title,description,price,category_type_id,id]
 		);
 
 
