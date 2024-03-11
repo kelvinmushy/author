@@ -3,89 +3,57 @@ import express from 'express';
 import conn from "../db/db_connection.mjs"
 
 const router=express.Router();
+
 router.use(express.json());
 
 
-router.get('/all/items',(req, res) => {
+export async function addItem(author_id,name,description,price,category_type_id){
 
-    var qry =`SELECT * from items;`;
+  const create_new= await conn.promise().query(
 
-      conn.connect(function () {
-       try{
-        conn.query(qry, function (err ,results) {
-          res.status(202).json({
-            items: results,
-          });
+     `INSERT INTO items (author_id,name,description,price,category_type_id) 
+        VALUES (?, ?,?,?,?)`,
 
-        });
-
-       }
-       catch (err) {
-        res.status(500).json({
-          message: err,
-        });
-      }
-
-       conn.end();
-    });
-
-});
-
-router.post('/item/add',(req,res)=>{
-
-    const name=req.body['name'];
-    const category_id=req.body['category_id']
-    conn.connect(function() {
-        try{
-           var sql = "INSERT INTO items (name, category_id) VALUES ('"+name+"', '"+category_id+"')";
-         
-           conn.query(sql, function (err, result) {
- 
-           if (err) throw err;
-           
-           res.status(202).json({
-            message: "item created",
-          });
-           
- 
-         });
- 
-        }catch(err){
-          res.status(500).json({
-            message: err,
-          });
-
-        }
-        
-        
- 
-       });
-})
-router.delete('/item/delete/:id',async (req,res)=>{
-    const id=req.params.id;
-  conn.connect(function() {
-      try{
-       var sql = "delete from items where id='"+id+"'";
-       conn.query(sql, function (err, result) {
-         if (err) throw err;
-           res.status(200).json({
-          message: "deleted",
-          });
-
-       });
-
-      }catch(err){
-
-        res.status(500).json({
-          message: err,
-        });
+      [author_id,name,description,price,category_type_id]
+      );
+     return create_new;
   
+}
 
-      }
-      
-      
+export async function getItems() {
+    const data = await conn.promise().query(
+      `SELECT *  from items;`
+    );
+    return data;
+}
 
-     });
-})
+ export async function deleteItem(id){
+      const update = await conn
+       .promise()
+       .query(
+        `DELETE FROM  items where id = ?`,
+      [id]
+      );
+      return update;
+  }
 
-export default router
+   export async function getItem(id){
+    const item = await conn.promise().query(
+      `SELECT *  from items where id = ?`,[id]
+    );
+    return item;
+
+  }
+
+  export async function updateItem(author_id,name,description,price,category_type_id,id){
+
+    const update = await conn
+		.promise()
+		.query(
+		  `UPDATE items set author_id = ?, name = ?, description = ? ,price=?,category_type_id=? where id = ?`,
+		    [author_id,name,description,price,category_type_id,id]
+		);
+
+
+  }
+
